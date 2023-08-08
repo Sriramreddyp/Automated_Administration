@@ -17,26 +17,7 @@ router.get("/", (req, res) => {
   res.json({ status: "Connected to exec route!!" });
 });
 
-//utility remoteCommand execution route
-router.post("/commandExec", async (req, res) => {
-  var command = req.body.cmd;
-
-  await exec(command, (error, stdout, stderr) => {
-    if (error) {
-      console.log("error");
-      res.send(error.message);
-    }
-
-    if (stderr) {
-      console.log("stdError");
-      res.send(stderr.message);
-    }
-
-    console.log("Executed Sucessfully");
-    res.send(stdout);
-  });
-});
-
+//-- Feature Should be upgraded later
 //ssh-key gen route -- (return - keyname)
 // router.post("/ssh-keygen", async (req, res) => {
 //   var keyname = req.body.keyname;
@@ -163,7 +144,6 @@ router.post("/initial-setup", async (req, res) => {
 
 //Creating User
 //6 -- setup user
-
 //Executed correctly but bugged somewhere - should change later
 router.get("/create-user", async (req, res) => {
   //Creating User
@@ -218,6 +198,31 @@ router.get("/final-setup", async (req, res) => {
   res.json(answer);
 });
 
+//Task-Executer-playbook
+router.post("/ansible-taskDoEr", async (req, res) => {
+  var Taskname = req.body.name;
+  async function task1() {
+    let operation = new Promise((resolve, _reject) => {
+      exec(
+        `cd /$HOME/${rootfilename} && ansible-playbook setting_up_${Taskname}.yml`,
+        () => {
+          console.log(`${Taskname} Setup SucessFull!!!`);
+          resolve(true);
+        }
+      );
+    });
+    return await operation;
+  }
+  let answer = {};
+  let ackOne = await task1();
+
+  answer = {
+    "Initializes Task Setup": ackOne,
+  };
+
+  res.json(answer);
+});
+
 //Ansible connection test
 router.post("/ansible-test", async (req, res) => {
   var filename = req.body.name;
@@ -231,16 +236,22 @@ router.post("/ansible-test", async (req, res) => {
   );
 });
 
-//Task-Executer-playbook
-router.post("/ansible-taskDoEr", async (req, res) => {
-  var filename = req.body.name;
-  var task = req.body.task;
-  await com.exec(
-    `cd /home/kratos/Ansible/${filename} && ansible-playbook /home/kratos/Ansible/AutomationScripts/setting_up_firewall.yml`,
-    (error, stderr, stdout) => {
-      if (error) res.send(error);
-      else if (stderr) res.send(stderr);
-      else res.send(`${task} Setup Sucessfull`);
+//utility remoteCommand execution route
+router.post("/commandExec", async (req, res) => {
+  var command = req.body.cmd;
+
+  await exec(command, (error, stdout, stderr) => {
+    if (error) {
+      console.log("error");
+      res.send(error.message);
     }
-  );
+
+    if (stderr) {
+      console.log("stdError");
+      res.send(stderr.message);
+    }
+
+    console.log("Executed Sucessfully");
+    res.send(stdout);
+  });
 });
