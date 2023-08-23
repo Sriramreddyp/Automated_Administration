@@ -19,6 +19,9 @@ pipeline{
     }
     
     stage('Deploy'){
+     when{
+      branch "main"
+     }
         steps{
             echo 'Deploying Application'
             sh 'nohup npm start > prod.log &'
