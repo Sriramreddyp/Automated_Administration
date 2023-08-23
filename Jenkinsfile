@@ -21,14 +21,14 @@ pipeline{
 
       stage('Docker Build') {
       steps {
-       withDockerRegistry(credentialsId: 'docker-cred', toolName: 'docker', url: 'https://hub.docker.com/repository/docker/sriram2211/jenkinstest/general') {
+       withDockerRegistry(credentialsId: 'docker-cred',url: 'https://hub.docker.com/repository/docker/sriram2211/jenkinstest/general') {
     // some block
     script{
              
-                withDockerRegistry(credentialsId: 'docker-cred', toolName: 'docker') {
+                
                           sh "docker build sriram2211/jenkinstest ."
                           sh "docker push sriram2211/jenkinstest:latest"
-                    }
+                    
             }
 }
             
