@@ -1,6 +1,6 @@
 # Automated API
 
-## Note : This readme is being used to keep track of the features executed in this project,so it consists all the steps and description in first-person perspective.
+### Note : This readme is being used to keep track of the features executed in this project,so it consists all the steps and description in first-person perspective.
 ## Analogy :
 A Restful-API which runs on the control node of the ansible environment where administrator can easily configure all the worker nodes with some prebuilt playbook configurations.
 
