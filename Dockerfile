@@ -4,9 +4,9 @@ FROM node:14.16.0-alpine
 # USER app
 WORKDIR /app
 
-COPY package*.json .
+COPY package*.json ./
 RUN npm install
-COPY . .
+COPY . ./
 
 EXPOSE 7000
 
