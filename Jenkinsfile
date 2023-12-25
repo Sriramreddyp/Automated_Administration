@@ -1,14 +1,18 @@
 pipeline{
     agent any
-    
-    tools {nodejs "node"}
-  
+    tools {
+        nodejs "Node"
+    }
+
+    environment {
+        CREDS = credentials('ecd3faa6-3cd5-47de-b703-01df6ee1447a')
+     }
     
     stages{
         
-    stage('Git Pull') {
+    stage('Git Checkout') {
       steps {
-        git branch: 'main', credentialsId: 'git-cred', url: 'https://github.com/Sriramreddyp/Automated_Administration.git'
+        git branch: 'main', url: 'https://github.com/Sriramreddyp/Automated_Administration.git'
       }
     }
     
@@ -18,23 +22,25 @@ pipeline{
             sh 'npm install'
         }
     }
+    
+    stage("OWASP DependencyCheck"){
+        steps{
+            echo 'Dependency check'
+            dependencyCheck additionalArguments: '--scan ./ --format HTML', odcInstallation: 'DP'
+        }
+    }
+    
 
-      stage('Docker Build') {
+    stage('Docker Build and update') {
       steps {
-       withDockerRegistry(credentialsId: 'docker-cred',url: 'https://hub.docker.com/repository/docker/sriram2211/jenkinstest/general') {
-    // some block
-    script{
-             
-                
-                          sh "docker build sriram2211/jenkinstest ."
-                          sh "docker push sriram2211/jenkinstest:latest"
-                    
-            }
+      script{
+         sh "docker login -u ${CREDS_USR} -p ${CREDS_PSW}"
+         sh "docker build -t jenkinstest -f Dockerfile ."
+         sh "docker tag jenkinstest sriram2211/jenkinstest:latest"
+         sh "docker push sriram2211/jenkinstest:latest"
+    }
+    }
 }
-            
-              
-        }
-        }
     
     stage('Deploy'){
         steps{
