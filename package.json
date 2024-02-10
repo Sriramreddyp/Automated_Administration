@@ -7,7 +7,8 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "nodemon index.js",
-    "sonarqube-verify": "sonarqube-verify"
+    "sonarqube-verify": "sonarqube-verify",
+    "sonarqube-scanner": "sonarqube-scanner"
   },
   "keywords": [],
   "author": "",
